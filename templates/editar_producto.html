@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Producto{% endblock %}
+
+{% block content %}
+  <h2 class="text-center mb-4">Editar Producto</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.nombre.label }} {{ form.nombre(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.precio.label }} {{ form.precio(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.stock.label }} {{ form.stock(class="form-control") }}
+    </div>
+
+<div class="mb-3">
+  {{ form.proveedor.label }}
+  {{ form.proveedor(class="form-select") }}
+
+  {% for error in form.proveedor.errors %}
+    <div class="text-danger">{{ error }}</div>
+  {% endfor %}
+</div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{{ url_for('productos') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}

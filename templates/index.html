@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sistema de Citas Médicas
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Sección Inicio -->
+<section id="inicio" class="text-center mb-5">
+
+  <h2>Bienvenido</h2>
+
+  <p>
+    Este proyecto fue desarrollado como práctica para la asignatura
+    Desarrollo de Aplicaciones Web. Su objetivo es mostrar cómo una
+    aplicación web puede ayudar a gestionar pacientes y citas médicas
+    de manera eficiente y organizada.
+  </p>
+
+  <button class="btn btn-success" id="btnAgendar">
+    Agendar Cita
+  </button>
+
+</section>
+
+
+<!-- Sección Quiénes Somos -->
+<section id="quienes-somos" class="mb-5">
+
+  <h2 class="text-center mb-4">
+    Quiénes Somos
+  </h2>
+
+  <div class="row">
+
+    <div class="col-md-8">
+
+      <p>
+        Somos un equipo de estudiantes comprometidos con el desarrollo
+        de soluciones tecnológicas para el área de la salud. Nuestro
+        proyecto busca facilitar la gestión de citas médicas, mejorar
+        la comunicación entre pacientes y doctores, y optimizar el
+        tiempo de atención.
+      </p>
+
+    </div>
+
+    <div class="col-md-4 text-center">
+
+      <img
+  src="{{ url_for('static', filename='img/logo-medico.jpg') }}"
+  alt="Símbolo médico"
+  class="img-fluid rounded"
+>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- Sección Servicios -->
+<section id="servicios" class="mb-5">
+
+  <h2 class="text-center mb-4">
+    Servicios
+  </h2>
+
+  <div class="row">
+
+    <div class="col-md-3 mb-3">
+      <div class="card p-3 text-center">
+        <h5 class="card-title">
+          Registro de pacientes
+        </h5>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card p-3 text-center">
+        <h5 class="card-title">
+          Agendamiento de citas
+        </h5>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card p-3 text-center">
+        <h5 class="card-title">
+          Historial clínico digital
+        </h5>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card p-3 text-center">
+        <h5 class="card-title">
+          Recordatorios automáticos
+        </h5>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- Sección Contacto -->
+<section id="contacto" class="mb-5">
+
+  <h2 class="text-center mb-4">
+    Contacto
+  </h2>
+
+  <form id="formCita">
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Nombre
+      </label>
+
+      <input
+        type="text"
+        id="nombreCita"
+        class="form-control"
+      >
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Correo electrónico
+      </label>
+
+      <input
+        type="email"
+        id="correo"
+        class="form-control"
+      >
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label class="form-label">
+        Motivo de la cita
+      </label>
+
+      <input
+        type="text"
+        id="motivo"
+        class="form-control"
+      >
+
+    </div>
+
+
+    <button
+      type="submit"
+      class="btn btn-primary w-100"
+    >
+      Registrar Cita
+    </button>
+
+  </form>
+
+
+  <!-- Spinner de carga -->
+  <div id="spinner" class="text-center mt-3 d-none">
+
+    <div class="spinner-border text-primary" role="status">
+
+      <span class="visually-hidden">
+        Cargando...
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- Render dinámico -->
+  <div id="listaCitas" class="mt-4"></div>
+
+</section>
+
+
+<!-- Formulario dinámico -->
+<section id="formulario-dinamico" class="mt-5">
+
+  <h2 class="text-center mb-4">
+    Registro Validado
+  </h2>
+
+
+  <form
+    id="formulario"
+    class="border p-4 bg-light rounded"
+  >
+
+
+    <div class="mb-3">
+
+      <label for="nombre2" class="form-label">
+        Nombre
+      </label>
+
+      <input
+        type="text"
+        id="nombre2"
+        class="form-control"
+        required
+        minlength="3"
+      >
+
+      <div class="invalid-feedback">
+        El nombre debe tener al menos 3 caracteres.
+      </div>
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label for="descripcion" class="form-label">
+        Descripción
+      </label>
+
+      <textarea
+        id="descripcion"
+        class="form-control"
+        required
+        minlength="10"
+      ></textarea>
+
+      <div class="invalid-feedback">
+        La descripción debe tener mínimo 10 caracteres.
+      </div>
+
+    </div>
+
+
+    <div class="mb-3">
+
+      <label for="categoria" class="form-label">
+        Categoría
+      </label>
+
+      <select
+        id="categoria"
+        class="form-select"
+        required
+      >
+
+        <option value="">
+          Seleccione una categoría
+        </option>
+
+        <option value="Medicina General">
+          Medicina General
+        </option>
+
+        <option value="Pediatría">
+          Pediatría
+        </option>
+
+        <option value="Odontología">
+          Odontología
+        </option>
+
+      </select>
+
+      <div class="invalid-feedback">
+        Debe seleccionar una categoría.
+      </div>
+
+    </div>
+
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+    >
+      Registrar
+    </button>
+
+
+    <button
+      type="button"
+      id="mostrar"
+      class="btn btn-success"
+    >
+      Mostrar
+    </button>
+
+
+    <button
+      type="button"
+      id="contar"
+      class="btn btn-info"
+    >
+      Contar
+    </button>
+
+
+    <button
+      type="button"
+      id="eliminar"
+      class="btn btn-danger"
+    >
+      Eliminar
+    </button>
+
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      data-bs-toggle="modal"
+      data-bs-target="#modalAyuda"
+    >
+      Ayuda
+    </button>
+
+  </form>
+
+
+  <div id="alerta" class="mt-3"></div>
+
+  <div id="registros" class="mt-3"></div>
+
+
+  <div
+    id="spinnerRegistro"
+    class="text-center mt-3 d-none"
+  >
+
+    <div
+      class="spinner-border text-primary"
+      role="status"
+    >
+
+      <span class="visually-hidden">
+        Cargando...
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- Información adicional -->
+<aside class="alert alert-info text-center mt-5">
+
+  <h4>
+    Información adicional
+  </h4>
+
+  <p>
+    Promoción: Primera cita gratuita para nuevos pacientes.
+  </p>
+
+  <p>
+    Horario de atención: Lunes a Viernes de 08h00 a 17h00.
+  </p>
+
+</aside>
+
+
+<!-- JavaScript del formulario de contacto -->
+<script>
+
+  const formCita = document.getElementById("formCita");
+  const lista = document.getElementById("listaCitas");
+
+  if (formCita) {
+
+    formCita.addEventListener("submit", (e) => {
+
+      e.preventDefault();
+
+      const nombre =
+        document.getElementById("nombreCita").value.trim();
+
+      const correo =
+        document.getElementById("correo").value.trim();
+
+      const motivo =
+        document.getElementById("motivo").value.trim();
+
+
+      if (!nombre || !correo || !motivo) {
+
+        alert("Por favor completa todos los campos.");
+
+        return;
+      }
+
+
+      const cita =
+        document.createElement("div");
+
+
+      cita.className =
+        "alert alert-success d-flex justify-content-between align-items-center";
+
+
+      cita.innerHTML =
+        `<span><strong>${nombre}</strong> (${correo}) - ${motivo}</span>`;
+
+
+      const btnEliminar =
+        document.createElement("button");
+
+
+      btnEliminar.textContent =
+        "Eliminar";
+
+
+      btnEliminar.className =
+        "btn btn-danger btn-sm";
+
+
+      btnEliminar.addEventListener("click", () => {
+
+        lista.removeChild(cita);
+
+      });
+
+
+      cita.appendChild(btnEliminar);
+
+      lista.appendChild(cita);
+
+      formCita.reset();
+
+    });
+
+  }
+
+</script>
+
+
+{% endblock %}

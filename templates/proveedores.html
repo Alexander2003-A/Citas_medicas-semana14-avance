@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Proveedores{% endblock %}
+
+{% block content %}
+
+<h2 class="text-center mb-4">Lista de Proveedores</h2>
+
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Teléfono</th>
+      <th>Correo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {% for proveedor in proveedores %}
+
+    <tr>
+      <td>{{ proveedor.id_proveedor }}</td>
+      <td>{{ proveedor.nombre }}</td>
+      <td>{{ proveedor.telefono }}</td>
+      <td>{{ proveedor.correo }}</td>
+
+      <td>
+
+        <a
+          href="{{ url_for('editar_proveedor', id=proveedor.id_proveedor) }}"
+          class="btn btn-warning btn-sm"
+        >
+          Editar
+        </a>
+
+        <form
+          action="{{ url_for('eliminar_proveedor', id=proveedor.id_proveedor) }}"
+          method="POST"
+          style="display:inline;"
+        >
+          <button
+            type="submit"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('¿Seguro que deseas eliminar este proveedor?');"
+          >
+            Eliminar
+          </button>
+        </form>
+
+      </td>
+
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+
+</table>
+
+{% endblock %}

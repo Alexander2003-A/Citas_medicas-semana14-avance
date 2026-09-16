@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+Panel Principal
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+
+    <h2 class="mb-4">
+        Panel de Administración
+    </h2>
+
+    <p class="lead">
+        Bienvenido, <strong>{{ current_user.usuario }}</strong>
+    </p>
+
+    <p>
+        Selecciona una opción para administrar el sistema.
+    </p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('productos') }}" class="btn btn-primary w-100">
+                Productos
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('clientes') }}" class="btn btn-success w-100">
+                Clientes
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('proveedores') }}" class="btn btn-warning w-100">
+                Proveedores
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('facturacion') }}" class="btn btn-info w-100">
+                Facturación
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

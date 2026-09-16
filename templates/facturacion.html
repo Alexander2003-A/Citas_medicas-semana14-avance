@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Facturación{% endblock %}
+
+{% block content %}
+  <h2 class="text-center mb-4">Facturas</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for factura in facturas %}
+        <tr>
+          <td>{{ factura.id_factura }}</td>
+          <td>{{ factura.cliente }}</td>
+          <td>{{ factura.fecha }}</td>
+          <td>${{ factura.total }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

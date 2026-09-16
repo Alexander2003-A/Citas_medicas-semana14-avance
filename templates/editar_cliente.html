@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Cliente{% endblock %}
+
+{% block content %}
+  <h2 class="text-center mb-4">Editar Cliente</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.nombre.label }} {{ form.nombre(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.cedula.label }} {{ form.cedula(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.telefono.label }} {{ form.telefono(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.correo.label }} {{ form.correo(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}
