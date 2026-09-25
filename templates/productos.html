@@ -4,6 +4,11 @@
 
 {% block content %}
   <h2 class="text-center mb-4">Lista de Productos</h2>
+  <div class="mb-3">
+    <a href="{{ url_for('formulario_producto') }}" class="btn btn-primary">
+        Agregar producto
+    </a>
+</div>
   <div class="row">
     {% for producto in productos %}
       <div class="col-md-4 mb-3">

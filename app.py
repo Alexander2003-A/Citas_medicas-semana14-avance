@@ -1,5 +1,6 @@
 import os
-from conexion.conexion import get_connection
+from conexion.conexion_app import get_app_connection as get_connection, get_dict_cursor
+from conexion.conexion_postgresql import get_postgresql_connection
 from flask import Flask, render_template, redirect, url_for, flash
 
 from forms.producto_form import ProductoForm
@@ -28,7 +29,7 @@ login_manager.login_message = "Debes iniciar sesión para acceder a esta página
 @login_manager.user_loader
 def load_user(user_id):
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
 
     cursor.execute(
         "SELECT id, usuario, password FROM usuarios WHERE id = %s",
@@ -60,7 +61,7 @@ def registro():
         password = form.password.data
 
         conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = get_dict_cursor(conn)
 
         # Comprobar si el usuario ya existe
         cursor.execute(
@@ -105,7 +106,7 @@ def login():
         password = form.password.data
 
         conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = get_dict_cursor(conn)
 
         cursor.execute(
             "SELECT id, usuario, password FROM usuarios WHERE usuario = %s",
@@ -162,7 +163,7 @@ def index():
 @login_required
 def clientes():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("SELECT id_cliente, nombre, cedula, telefono, correo FROM clientes")
     clientes = cursor.fetchall()
     cursor.close()
@@ -174,7 +175,7 @@ def clientes():
 @login_required
 def proveedores():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("SELECT id_proveedor, nombre, telefono, correo FROM proveedores")
     proveedores = cursor.fetchall()
     cursor.close()
@@ -186,7 +187,7 @@ def proveedores():
 @login_required
 def facturacion():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("""
         SELECT f.id_factura, f.id_cliente, c.nombre AS cliente, f.fecha, f.total
         FROM facturas f
@@ -202,7 +203,7 @@ def facturacion():
 def editar_producto(id):
 
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
 
     # Obtener el producto
     cursor.execute(
@@ -294,7 +295,7 @@ def eliminar_producto(id):
 @login_required
 def editar_cliente(id):
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("SELECT * FROM clientes WHERE id_cliente = %s", (id,))
     cliente = cursor.fetchone()
     cursor.close()
@@ -345,7 +346,7 @@ def formulario_producto():
 
     # Obtener proveedores desde MySQL
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
 
     cursor.execute(
         "SELECT id_proveedor, nombre FROM proveedores"
@@ -435,7 +436,7 @@ def formulario_proveedor():
 @login_required
 def editar_proveedor(id):
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
 
     cursor.execute(
         "SELECT * FROM proveedores WHERE id_proveedor = %s",
@@ -529,7 +530,7 @@ def eliminar_proveedor(id):
 def formulario_facturacion():
     form = FacturaForm()
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("SELECT id_cliente, nombre FROM clientes")
     clientes = cursor.fetchall()
     cursor.close()
@@ -540,7 +541,7 @@ def formulario_facturacion():
         total = form.total.data
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO facturas (id_cliente, fecha, total) VALUES (%s, CURDATE(), %s)",
+        cursor.execute("INSERT INTO facturas (id_cliente, fecha, total) VALUES (%s, CURRENT_DATE, %s)",
                        (cliente, total))
         conn.commit()
         cursor.close()
@@ -548,12 +549,60 @@ def formulario_facturacion():
         return redirect(url_for("facturacion"))
     return render_template("formulario_facturacion.html", form=form)
 
+
+@app.route("/probar_postgresql")
+@login_required
+def probar_postgresql():
+    conn = get_postgresql_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT current_database();")
+    base_datos = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    return f"Conexion PostgreSQL correcta - Base de datos: {base_datos}"
+
+
+
+@app.route("/productos_relacionados")
+@login_required
+def productos_relacionados():
+    conn = get_postgresql_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            productos.nombre,
+            productos.precio,
+            productos.stock,
+            proveedores.nombre
+        FROM productos
+        INNER JOIN proveedores
+            ON productos.id_proveedor = proveedores.id_proveedor
+    """)
+
+    productos = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "productos_relacionados.html",
+        productos=productos
+    )
+
+
+
+
+
 # Ruta de productos
 @app.route("/productos")
 @login_required
 def productos():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = get_dict_cursor(conn)
     cursor.execute("SELECT id_producto, nombre, precio, stock FROM productos")
     productos = cursor.fetchall()
     cursor.close()
